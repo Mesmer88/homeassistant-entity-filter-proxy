@@ -122,6 +122,13 @@ func wsProxyWithInterval(haWSURL string, entityIDs []string, filterEntities bool
 				return
 			}
 
+			if msgType == websocket.TextMessage {
+				var peek map[string]any
+				if json.Unmarshal(data, &peek) == nil && peek["type"] == "auth_invalid" {
+					log.Printf("auth_invalid from HA for client %s: %v", r.RemoteAddr, peek["message"])
+				}
+			}
+
 			if filter != nil && msgType == websocket.TextMessage {
 				data = filter.filterResponse(data)
 				if data == nil {
