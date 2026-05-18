@@ -51,7 +51,21 @@ func wsProxyWithInterval(haWSURL string, entityIDs []string, filterEntities bool
 	}
 
 	dialURL := haWSURL + r.URL.Path
-	haConn, _, err := websocket.DefaultDialer.Dial(dialURL, nil)
+	// Forward auth-relevant headers (Cookie, Authorization) from the client's
+	// WebSocket upgrade request so that Ingress and other authenticated WS
+	// endpoints (e.g. add-on terminals, live-log viewers) can validate the
+	// session.  For /api/websocket auth is handled via the WS auth message, so
+	// forwarding these headers there is harmless.
+	haDialHeaders := http.Header{}
+	for _, name := range []string{"Cookie", "Authorization"} {
+		if v := r.Header.Get(name); v != "" {
+			haDialHeaders.Set(name, v)
+		}
+	}
+	if len(haDialHeaders) == 0 {
+		haDialHeaders = nil
+	}
+	haConn, _, err := websocket.DefaultDialer.Dial(dialURL, haDialHeaders)
 	if err != nil {
 		log.Printf("connecting to HA websocket at %s failed: %v", dialURL, err)
 		clientConn.Close()
