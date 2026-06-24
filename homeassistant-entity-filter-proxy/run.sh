@@ -9,16 +9,16 @@ if [ ! -f "$OPTIONS_FILE" ]; then
   exit 1
 fi
 
-HOMEASSISTANT_URL=$(jq -ec '.homeassistant_url' "$OPTIONS_FILE")
-ACCESS_TOKEN=$(jq -ec '.access_token // ""' "$OPTIONS_FILE")
-LISTEN_ADDR=$(jq -ec '.listen_addr // ":8124"' "$OPTIONS_FILE")
-DASHBOARD_URL_PATH=$(jq -ec '.dashboard_url_path // ""' "$OPTIONS_FILE")
+HOMEASSISTANT_URL=$(jq -c '.homeassistant_url' "$OPTIONS_FILE")
+ACCESS_TOKEN=$(jq -c '.access_token // ""' "$OPTIONS_FILE")
+LISTEN_ADDR=$(jq -c '.listen_addr // ":8124"' "$OPTIONS_FILE")
+DASHBOARD_URL_PATH=$(jq -c '.dashboard_url_path // ""' "$OPTIONS_FILE")
 INCLUDE_ALL_ENTITIES=$(jq -r '.include_all_entities // false' "$OPTIONS_FILE")
 STATE_UPDATE_INTERVAL=$(jq -ec '.state_update_interval // ""' "$OPTIONS_FILE")
 TRANSPARENT=$(jq -r '.transparent // true' "$OPTIONS_FILE")
-EXTRA_ENTITIES=$(jq -ec '.extra_entities // []' "$OPTIONS_FILE")
-INCLUDE_ENTITY_GLOBS=$(jq -ec '.include_entity_globs // []' "$OPTIONS_FILE")
-EXCLUDE_ENTITY_GLOBS=$(jq -ec '.exclude_entity_globs // []' "$OPTIONS_FILE")
+EXTRA_ENTITIES=$(jq -c '.extra_entities // []' "$OPTIONS_FILE")
+INCLUDE_ENTITY_GLOBS=$(jq -c '.include_entity_globs // []' "$OPTIONS_FILE")
+EXCLUDE_ENTITY_GLOBS=$(jq -c '.exclude_entity_globs // []' "$OPTIONS_FILE")
 
 {
   echo "homeassistant_url: ${HOMEASSISTANT_URL}"
